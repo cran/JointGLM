@@ -139,8 +139,8 @@ adjvar.vs.linpred <- function(glm, smooth = TRUE, ...){
          'logit' = { z <- z + (y - glm$fitted) / (1 - glm$fitted)^2 },
          'sqrt' = { z <- z + 2 * (y - glm$fitted) / sqrt(glm$fitted) },
          '1/mu^2' = { z <- z - 2 * (y - glm$fitted) / glm$fitted^3 },
-         'probit' = stop('Pas encore implémenté !!!'),
-         'cloglog' = stop('Pas encore implémenté !!!')
+         'probit' = stop('Not implemented yet !!!'),
+         'cloglog' = stop('Not implemented yet !!!')
          )
          
          
