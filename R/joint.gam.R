@@ -1,9 +1,9 @@
-joint.glm <- function(form.mean, form.disp, data,
-                      family.mean = gaussian, family.disp = Gamma(link='log'),
-                      eps = 10^(-6), iter.max = 100, maxit = 50, reml = TRUE){
-  
-  warning("Package JointGLM is outdated. Please use the JointModeling packgage.\n")
+joint.gam <- function(form.mean, form.disp, data, family.mean = gaussian,
+                      family.disp = Gamma(link='log'), eps = 10^(-6),
+                      iter.max = 100, maxit = 50){
 
+  warning("Package JointGLM is outdated. Please use the JointModeling packgage.\n")
+  
   ##This function will fit the Joint Model through the framework describe
   ##in [McCullagh1989]
   ##By default, it fit a gaussian distribution for the mean component
@@ -25,11 +25,9 @@ joint.glm <- function(form.mean, form.disp, data,
   ##iter.max      : The maximum number of iteration to fit the Joint
   ##                Model.
   ##maxit         : The maximum number of iteration to fit a generic
-  ##                GLM - see function ``glm.fit''
-  ##reml          : Logical. If TRUE, the Restricted Maximum Likelihood
-  ##                Estimation is used.
+  ##                GAM - see function ``gam.fit''
 
-  ##First convert formulas in ``real'' formula
+  ##First convert formulas to ``real'' formula
   form.mean <- as.formula(form.mean)
   form.disp <- as.formula(form.disp)
   
@@ -52,7 +50,7 @@ joint.glm <- function(form.mean, form.disp, data,
   n.iter <- 0
 
   ##First, fit the GLM associated to the mean
-  mod.mean <- glm(form.mean, family = family.mean, data = data,
+  mod.mean <- gam(form.mean, family = family.mean, data = data,
                   maxit = maxit, weights = weights)
   
   while ( !flag ){
@@ -67,18 +65,13 @@ joint.glm <- function(form.mean, form.disp, data,
                                         #contribution
     d <- residuals(mod.mean.alias, 'deviance')^2
     
-    if (reml)
-      d <- d / (1 - hat.glm(mod.mean))
-    
     data.disp <- cbind(d = d, data[,-1])
     data.disp <- as.data.frame(data.disp)
     names(data.disp) <- c('d', names(data)[-1])
 
     weights.disp <- rep(1, length(d))
-    if (reml)
-      weights.disp <- 1 - hat.glm(mod.mean)
-    
-    mod.disp <- glm(form.disp, family = family.disp,
+   
+    mod.disp <- gam(form.disp, family = family.disp,
                     data = data.disp, weights = weights.disp,
                     maxit = maxit)
     
@@ -87,15 +80,24 @@ joint.glm <- function(form.mean, form.disp, data,
 
     ##Update for the mean weights
     weights <- 1 / phi
-    mod.mean <- glm(form.mean, family = family.mean, data = data,
+    mod.mean <- gam(form.mean, family = family.mean, data = data,
                     maxit = maxit, weights = weights)
 
     dev.old <- dev.new
-            
+
+    if (is.null(mod.mean$pdev))
+      mod.mean$pdev <- 0
+
+    if (is.null(mod.disp$pdev))
+      mod.disp$pdev <- 0
+
     dev.new <- eql(mod.mean,mod.disp)["eql"]
+    dev.new <- dev.new - 0.5 * (mod.mean$pdev - mod.mean$deviance +
+                                mod.disp$pdev - mod.disp$deviance)
     cat("Percentage of EQL variation is : ",
         abs( (dev.old - dev.new) / dev.old * 100),"\n")
-    flag <- ( iter.max < n.iter) || abs( (dev.old - dev.new) / dev.new * 100) < eps
+    flag <- ( iter.max < n.iter) || abs( (dev.old - dev.new) /
+                                        dev.new * 100) < eps
    
     n.iter <- n.iter + 1
     
@@ -105,42 +107,3 @@ joint.glm <- function(form.mean, form.disp, data,
               iterations = n.iter, eql = dev.new))
 }
 
-eql <- function(mod.mean, mod.disp, df.adj = TRUE){
-  ##A function which compute the Extended Quasi-Deviance
-  ##(EQD) for the Joint Model
-
-  ##mod.mean : Object of class ``glm'' corresponding to
-  ##           the mean component
-  ##mod.disp : Object of class ``glm'' corresponding to
-  ##           the dispersion component
-  ##df.adj   : Logique. If ``TRUE'' adjustment on degree
-  ##           of freedom is applied
-
-  dispersion <- mod.disp$fitted              #dispersion parameter
-                                             #estimate
-  dev.res <- mod.disp$y
-  
-  fct.var <- mod.mean$family$variance        #Variance function
-
-  if(df.adj)
-    eqllik <- - dev.res / (2 * dispersion)  -
-      1/2 * mod.mean$df.residual / length(dispersion) *
-        log(2*pi*dispersion*fct.var(mod.mean$y))
-  else
-    eqllik <- -dev.res / (2 * dispersion) -
-      1/2 * log(2*pi*dispersion*fct.var(mod.mean$y))
-  
-  eql <- sum(eqllik)
-  eqd <- -2 * sum(dispersion * eqllik)
-
-  return(c(eql = eql, eqd = eqd))
-}
-
-hat.glm <- function(glm){
-  X <- as.matrix(glm$data[,-1])
-  W <- diag(glm$weights)
-  H <- sqrt(W) %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% sqrt(W)
-  h <- diag(H)
-
-  return(h)
-}

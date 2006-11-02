@@ -1,17 +1,20 @@
-\name{Joint Modelling}
-\alias{eqd.joint}
-\title{Compute the Extended Quasi-Deviance}
-\description{Compute the Extended Quasi-Deviance for a Joint Model.}
+\name{eql}
+\alias{eql}
+\title{Compute the Extended Quasi-Likelihood and the Extended
+  Quasi-Deviance}
+\description{Compute the Extended Quasi-Likelihood and the Extended
+  Quasi-Deviance for a Joint Model.}
 
-\usage{eqd.joint(glm.mean, glm.disp, df.adj = TRUE)}
+\usage{eql(mod.mean, mod.disp, df.adj = TRUE)}
 \arguments{
-  \item{glm.mean, glm.disp}{Objects of class \emph{glm} correponding to
+  \item{mod.mean, mod.disp}{Two fitted GLMs/GAMs correponding to
     the mean and the dispersion components respectively.}
   \item{df.adj}{Logical. If \emph{TRUE} - the default, adjustment on
     degree of freedom is applied for the EQD.}
 }
 \value{
-  This function return the Extended Quasi-Deviance for a joint model.}
+  This function returns the Extended Quasi-Likelihood and the Extended
+  Quasi-Deviance for a joint model.}
 \details{
   The Extended Quasi-Likelihood (EQL) generalizes the Quasi-Likelihood
   as it behaves as a likelihood function on both mean and dispersion

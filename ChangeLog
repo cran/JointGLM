@@ -1,0 +1,84 @@
+2006-11-02  ribatema@BRANDY  <ribatema@brandy>
+
+	* DESCRIPTION:
+	Update the version number and tells that it is now outdated
+
+	* man/summary.joint.Rd: Add a method for summary of joint objects
+
+	* man/print.joint.Rd: Add Bertrand to the author
+
+	* man/joint.glm.Rd:
+	Add a generic function fitjoint to fit both joint GLMs and joint GAMs
+
+	* man/internals.Rd: Add internal function from the mgcv package
+
+	* man/graphics.Rd: Add method to plot joint objects
+
+	* man/eqd.joint.Rd:
+	Change the name of the function and compute both EQL and EQD
+
+	* R/graphics.R, R/joint.glm.R: tell user that this package is outdated
+
+	* R/joint.gam.R: Fix a bug when the penalized deviance is not computed
+	tell user that this package is outdated
+
+	* R/generics.R: Add a generic method for summary of joint objects
+	tell user that this package is outdated
+
+	* R/fromMgcv.R: the modified function from the mgcv package
+
+2006-10-23  ribatema@BRANDY  <ribatema@brandy>
+
+	* R/joint.glm.R:
+	Change the component of object return by the joint.glm function. As it
+	must be generic, there is no more ``glm.mean'' or ``glm.disp'' but
+	``mod.mean'' and ``mod.disp''
+
+	The eqd function is renamed to eql as now it computes both eqd and eql.
+
+	* R/graphics.R: Add a method for ploting ``joint'' objects
+
+	* R/generics.R, R/joint.gam.R, man/print.joint.Rd:
+	Add the joint.gam function and methods for plotting object of class
+	``joint''
+
+	* DESCRIPTION: Update version and date
+
+2006-10-23  ribatema@BRANDY  <ribatema@brandy>
+
+	* R/joint.glm.R:
+	Change the component of object return by the joint.glm function. As it
+	must be generic, there is no more ``glm.mean'' or ``glm.disp'' but
+	``mod.mean'' and ``mod.disp''
+
+	The eqd function is renamed to eql as now it computes both eqd and eql.
+
+	* R/graphics.R: Add a method for ploting ``joint'' objects
+
+	* R/generics.R, R/joint.gam.R, man/print.joint.Rd:
+	Add the joint.gam function and methods for plotting object of class
+	``joint''
+
+	* DESCRIPTION: Update version and date
+
+2006-10-23  ribatema@BRANDY  <ribatema@brandy>
+
+	* joint.glm.R:
+	Change the component of object return by the joint.glm function. As it
+	must be generic, there is no more ``glm.mean'' or ``glm.disp'' but
+	``mod.mean'' and ``mod.disp''
+
+	The eqd function is renamed to eql as now it computes both eqd and eql.
+
+	* graphics.R: Add a method for ploting ``joint'' objects
+
+	* generics.R, joint.gam.R:
+	Add the joint.gam function and methods for plotting object of class
+	``joint''
+
+2006-10-22  ribatema@BRANDY  <ribatema@brandy>
+
+	* graphics.R, joint.glm.R:
+
+	* graphics.R, joint.glm.R: New file.
+
